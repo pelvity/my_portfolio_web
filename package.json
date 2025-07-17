@@ -2,26 +2,37 @@
   "name": "my_portfolio_web",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/drei": "^10.4.4",
+    "@react-three/fiber": "^9.2.0",
+    "@react95/clippy": "^2.0.2",
+    "@react95/core": "^9.5.2",
+    "@react95/icons": "^2.2.0",
+    "framer-motion": "^12.23.0",
+    "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.5"
+    "styled-components": "^6.1.19",
+    "three": "^0.178.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
-    "@eslint/eslintrc": "^3"
+    "only-allow": "^1.2.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
