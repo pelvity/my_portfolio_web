@@ -1,0 +1,160 @@
+{
+  "basics": {
+    "name": "Artem S.",
+    "title": "Full-Stack Developer",
+    "summary": "Experienced full-stack developer specializing in scalable web applications, business automation, and high-performance systems.",
+    "contact": {
+      "email": "pelvity@gmail.com",
+      "phone": "+48 886 297 121",
+      "location": "Poland",
+      "linkedin": "https://www.linkedin.com/in/artem-artem-52a159285/",
+      "github": "https://github.com/pelvity",
+      "telegram": "https://t.me/vvrtem"
+    }
+  },
+  "education": [
+    {
+      "institution": "Lublin University of Technology",
+      "degree": "Bachelor",
+      "field": "Computer Science (Software Engineering)",
+      "startDate": "2021",
+      "endDate": "2025",
+      "description": "Located in Lublin, Poland"
+    }
+  ],
+  "experience": [
+    {
+      "company": "Proxy Rent Business",
+      "position": "Founder & Developer",
+      "startDate": "2022",
+      "endDate": "2024",
+      "description": "Self-employed business owner and developer of a proxy rental platform in Poland, focusing on full-stack development, scalable systems, and business automation.",
+      "achievements": [
+        "Scaled a proxy rental platform (React/Flask, SQL, REST API) to 300+ concurrent users with 99.8% uptime",
+        "Automated 70% of operations (proxy rotation, inventory) via backend APIs, cutting manual workload",
+        "Integrated payments (subscriptions/pay-as-you-go) and fraud detection, ensuring secure revenue streams",
+        "Developed real-time admin dashboards and Telegram bots for user support and notifications",
+        "Engineered scalable infrastructure using Docker, Nginx, and Redis for high-performance load balancing"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "React",
+      "level": "Advanced",
+      "category": "Frontend"
+    },
+    {
+      "name": "Redux",
+      "level": "Advanced",
+      "category": "Frontend"
+    },
+    {
+      "name": "Material-UI",
+      "level": "Advanced",
+      "category": "Frontend"
+    },
+    {
+      "name": "Python",
+      "level": "Advanced",
+      "category": "Backend"
+    },
+    {
+      "name": "C#",
+      "level": "Advanced",
+      "category": "Backend"
+    },
+    {
+      "name": "Flask",
+      "level": "Advanced",
+      "category": "Backend"
+    },
+    {
+      "name": "SQLAlchemy",
+      "level": "Advanced",
+      "category": "Backend"
+    },
+    {
+      "name": "MySQL",
+      "level": "Advanced",
+      "category": "Database"
+    },
+    {
+      "name": "Redis",
+      "level": "Advanced",
+      "category": "Database"
+    },
+    {
+      "name": "Docker",
+      "level": "Advanced",
+      "category": "DevOps"
+    },
+    {
+      "name": "Nginx",
+      "level": "Advanced",
+      "category": "DevOps"
+    },
+    {
+      "name": "Telegram Bot API",
+      "level": "Advanced",
+      "category": "API"
+    },
+    {
+      "name": "HTML/CSS",
+      "level": "Advanced",
+      "category": "Frontend"
+    },
+    {
+      "name": "AWS",
+      "level": "Advanced",
+      "category": "Cloud"
+    },
+    {
+      "name": "Linux",
+      "level": "Advanced",
+      "category": "DevOps"
+    },
+    {
+      "name": "Git",
+      "level": "Advanced",
+      "category": "Tools"
+    },
+    {
+      "name": "Postman",
+      "level": "Advanced",
+      "category": "Tools"
+    },
+    {
+      "name": "Testing",
+      "level": "Advanced",
+      "category": "QA"
+    }
+  ],
+  "languages": [
+    {
+      "name": "English",
+      "level": "Advanced"
+    },
+    {
+      "name": "Polish",
+      "level": "Advanced"
+    },
+    {
+      "name": "Ukrainian",
+      "level": "Native"
+    },
+    {
+      "name": "Russian",
+      "level": "Advanced"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Proxy Rental Platform",
+      "description": "A comprehensive platform for renting and managing proxies with user dashboard, admin console, and automated proxy rotation",
+      "technologies": ["React", "Redux", "Flask", "SQL", "Docker", "Redis"],
+      "link": "",
+      "image": ""
+    }
+  ]
+} 
