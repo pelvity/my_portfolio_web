@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
+/* Import React95 core styles */
+@import '@react95/core/GlobalStyle';
+@import '@react95/core/themes/win95.css';
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 192, 192, 192;
+  --background-end-rgb: 192, 192, 192;
+  --font-ms-sans: 'MS Sans Serif', 'Pixelated MS Sans Serif', sans-serif;
+  --font-video: 'React95Video-Numbers', monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-size: 12px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  font-family: var(--font-ms-sans);
+  margin: 0;
+  padding: 0;
+}
+
+/* Global Font Rules */
+*, *::before, *::after {
+  font-family: var(--font-ms-sans);
+  box-sizing: border-box;
+}
+
+/* Font Size Utility Classes */
+.text-large {
+  font-size: 16px;
+}
+
+.text-standard {
+  font-size: 12px;
+}
+
+.text-small {
+  font-size: 10px;
+}
+
+/* Font styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-ms-sans);
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 16px;
+}
+
+h2 {
+  font-size: 14px;
+}
+
+h3, h4, h5, h6 {
+  font-size: 12px;
+}
+
+/* Custom scrollbar styling to match Windows 95 */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #c0c0c0;
+  border: 1px solid #808080;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #c0c0c0;
 }

@@ -1,0 +1,7 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Windows 95 logo - four colored squares -->
+  <rect x="2" y="2" width="7.5" height="7.5" fill="#FF0000"/>
+  <rect x="10.5" y="2" width="7.5" height="7.5" fill="#00FF00"/>
+  <rect x="2" y="10.5" width="7.5" height="7.5" fill="#0000FF"/>
+  <rect x="10.5" y="10.5" width="7.5" height="7.5" fill="#FFFF00"/>
+</svg> 
