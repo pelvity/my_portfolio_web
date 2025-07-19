@@ -18,12 +18,12 @@ interface Win95WindowProps {
   resizable?: boolean;
 }
 
-const WindowFrame = styled.div<{ zIndex: number, width: number, height: number, position: { x: number, y: number } }>`
+const WindowFrame = styled.div<{ $zIndex: number, $width: number, $height: number, $position: { x: number, y: number } }>`
   position: absolute;
-  top: ${props => props.position.y}px;
-  left: ${props => props.position.x}px;
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
+  top: ${props => props.$position.y}px;
+  left: ${props => props.$position.x}px;
+  width: ${props => props.$width}px;
+  height: ${props => props.$height}px;
   background: #c0c0c0;
   border-top: 1px solid white;
   border-left: 1px solid white;
@@ -31,7 +31,7 @@ const WindowFrame = styled.div<{ zIndex: number, width: number, height: number, 
   border-bottom: 1px solid #000;
   display: flex;
   flex-direction: column;
-  z-index: ${props => props.zIndex};
+  z-index: ${props => props.$zIndex};
   font-family: 'MS Sans Serif', 'Pixelated MS Sans Serif', sans-serif;
 `;
 
@@ -210,10 +210,10 @@ const Win95Window: React.FC<Win95WindowProps> = ({
 
   return (
     <WindowFrame 
-      position={position} 
-      width={size.width} 
-      height={size.height} 
-      zIndex={zIndex}
+      $position={position} 
+      $width={size.width} 
+      $height={size.height} 
+      $zIndex={zIndex}
       onClick={onActivate}
     >
       <WindowHeader 
