@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, MouseEvent, useCallback } from 'react';
 import styled from 'styled-components';
 import { Fieldset, Frame } from '@react95/core';
 import { FolderFile, Computer, Globe } from '@react95/icons';
@@ -33,8 +33,20 @@ const StyledSelect = styled.select<{ width?: number }>`
 `;
 
 const Select: React.FC<SelectProps> = ({ options, onChange, value, defaultValue, width }) => {
+  // Only use value if provided, otherwise use defaultValue
+  const selectProps: any = {
+    onChange,
+    width
+  };
+  
+  if (value !== undefined) {
+    selectProps.value = value;
+  } else if (defaultValue !== undefined) {
+    selectProps.defaultValue = defaultValue;
+  }
+  
   return (
-    <StyledSelect onChange={onChange} value={value} defaultValue={defaultValue} width={width}>
+    <StyledSelect {...selectProps}>
       {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label}
@@ -43,6 +55,14 @@ const Select: React.FC<SelectProps> = ({ options, onChange, value, defaultValue,
     </StyledSelect>
   );
 };
+
+// Create a session storage cache key for GitHub repos
+const GITHUB_CACHE_KEY = 'githubReposCache';
+const GITHUB_CACHE_EXPIRY_KEY = 'githubReposCacheExpiry';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+// Rate limit handling variables
+const RATE_LIMIT_COOLDOWN = 60 * 1000; // 60 seconds in milliseconds
 
 interface GitHubRepo {
   id: number;
@@ -56,6 +76,7 @@ interface GitHubRepo {
   topics: string[];
   created_at: string;
   updated_at: string;
+  fork: boolean; // Added fork property
 }
 
 interface GitHubProjectViewerProps {
@@ -78,6 +99,47 @@ const ProjectsGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
   margin-top: 16px;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+`;
+
+const LoadingText = styled.p`
+  font-size: 14px;
+  margin: 20px 0;
+`;
+
+const LoadingIndicator = styled.div`
+  width: 50px;
+  height: 20px;
+  text-align: center;
+  
+  &:after {
+    content: '.';
+    animation: dots 1.5s steps(5, end) infinite;
+  }
+  
+  @keyframes dots {
+    0%, 20% {
+      color: rgba(0,0,0,0);
+      text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0);
+    }
+    40% {
+      color: #000;
+      text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0);
+    }
+    60% {
+      text-shadow: .25em 0 0 #000, .5em 0 0 rgba(0,0,0,0);
+    }
+    80%, 100% {
+      text-shadow: .25em 0 0 #000, .5em 0 0 #000;
+    }
+  }
 `;
 
 const ProjectCard = styled.div`
@@ -177,11 +239,6 @@ const IconWrapper = styled.span`
   align-items: center;
 `;
 
-const LoadingText = styled.p`
-  font-size: 14px;
-  margin: 20px 0;
-`;
-
 const ErrorText = styled.p`
   font-size: 14px;
   color: #ff0000;
@@ -225,7 +282,7 @@ const ClearFilterButton = styled.button`
   }
 `;
 
-const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = ({ 
+const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({ 
   username, 
   featured = [], 
   filterTopics = ["showcase"],
@@ -238,71 +295,217 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = ({
   const [selectedRepo, setSelectedRepo] = useState<GitHubRepo | null>(null);
   const [availableTopics, setAvailableTopics] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [isRateLimited, setIsRateLimited] = useState(false);
+
+  // Function to get cached repos
+  const getCachedRepos = useCallback(() => {
+    if (typeof window === 'undefined') return null;
+    
+    try {
+      const cacheExpiry = localStorage.getItem(GITHUB_CACHE_EXPIRY_KEY);
+      const cacheData = localStorage.getItem(GITHUB_CACHE_KEY);
+      
+      if (!cacheExpiry || !cacheData) return null;
+      
+      const expiryTime = parseInt(cacheExpiry, 10);
+      
+      // Check if cache is still valid
+      if (Date.now() < expiryTime) {
+        const data = JSON.parse(cacheData);
+        
+        // Make sure we're getting data for the right username
+        if (data.username === username) {
+          return data.repos;
+        }
+      }
+    } catch (err) {
+      console.error('Error reading from cache:', err);
+    }
+    
+    return null;
+  }, [username]);
+
+  // Function to cache repos
+  const cacheRepos = useCallback((repos: GitHubRepo[]) => {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      const cacheData = {
+        username,
+        repos
+      };
+      
+      localStorage.setItem(GITHUB_CACHE_KEY, JSON.stringify(cacheData));
+      localStorage.setItem(GITHUB_CACHE_EXPIRY_KEY, (Date.now() + CACHE_TTL).toString());
+    } catch (err) {
+      console.error('Error writing to cache:', err);
+    }
+  }, [username]);
+
+  // Function to process repos data
+  const processReposData = useCallback((ownRepos: GitHubRepo[]) => {
+    // Sort repos - featured first, then by updated date
+    const sortedRepos = [...ownRepos].sort((a, b) => {
+      // Featured repos first
+      const aFeatured = featured.includes(a.name);
+      const bFeatured = featured.includes(b.name);
+      
+      if (aFeatured && !bFeatured) return -1;
+      if (!aFeatured && bFeatured) return 1;
+      
+      // Then sort by update date
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    });
+    
+    setRepos(sortedRepos);
+    
+    // Extract all unique topics from repos
+    const allTopics = Array.from(
+      new Set(
+        sortedRepos.flatMap(repo => repo.topics)
+      )
+    ).sort();
+    
+    setAvailableTopics(allTopics);
+    
+    // Initial filtering
+    if (filterTopics && filterTopics.length > 0) {
+      // Find the first filter topic that exists in our repos
+      const initialTopic = filterTopics.find(topic => allTopics.includes(topic)) || null;
+      setSelectedTopic(initialTopic);
+      
+      if (initialTopic) {
+        setFilteredRepos(sortedRepos.filter(repo => repo.topics.includes(initialTopic)));
+      } else {
+        setFilteredRepos(sortedRepos);
+      }
+    } else {
+      setFilteredRepos(sortedRepos);
+    }
+    
+    // Set first repo as selected by default
+    if (sortedRepos.length > 0) {
+      setSelectedRepo(sortedRepos[0]);
+    }
+  }, [featured, filterTopics]);
+
+  // Fetch repos with retry logic
+  const fetchReposWithRetry = useCallback(async (retryCount = 0, delay = 1000) => {
+    // Create a controller outside the try block so we can access it in the returned cleanup function
+    const controller = new AbortController();
+    
+    try {
+      setLoading(true);
+      
+      // Check if we're rate limited
+      if (isRateLimited) {
+        throw new Error("API rate limit exceeded. Please try again later.");
+      }
+      
+      // Check cache first
+      const cachedData = getCachedRepos();
+      if (cachedData) {
+        processReposData(cachedData);
+        setLoading(false);
+        setError(null);
+        // Return cleanup function even when using cache
+        return () => {
+          controller.abort();
+        };
+      }
+      
+      const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `token ${token}`;
+      }
+
+      // Using the controller for fetch to be able to abort it when component unmounts
+      const signal = controller.signal;
+
+      const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`, {
+        headers,
+        signal
+      });
+      
+      // Check for rate limit headers
+      const rateLimit = parseInt(response.headers.get('x-ratelimit-remaining') || '1', 10);
+      const rateLimitReset = parseInt(response.headers.get('x-ratelimit-reset') || '0', 10) * 1000;
+      
+      if (rateLimit <= 0) {
+        const resetTime = new Date(rateLimitReset);
+        const waitTime = Math.max(
+          rateLimitReset - Date.now(),
+          RATE_LIMIT_COOLDOWN
+        );
+        
+        setIsRateLimited(true);
+        
+        // Set a timeout to reset the rate limit flag
+        setTimeout(() => {
+          setIsRateLimited(false);
+        }, waitTime);
+        
+        throw new Error(`GitHub API rate limit exceeded. Resets at ${resetTime.toLocaleTimeString()}`);
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch repositories: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      // Filter out forked repositories (only show your own projects)
+      const ownRepos = data.filter((repo: GitHubRepo) => !repo.fork);
+      
+      // Cache the fetched repos
+      cacheRepos(ownRepos);
+      
+      // Process the repos data
+      processReposData(ownRepos);
+      
+      setError(null);
+    } catch (err) {
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          // Do nothing for aborted requests
+          return;
+        }
+        
+        console.error('Error fetching GitHub repos:', err.message);
+        setError(err.message);
+        
+        // If we have network errors, try to retry with exponential backoff
+        if (retryCount < 3 && !isRateLimited && err.message.includes('fetch')) {
+          const nextDelay = delay * 2;
+          setTimeout(() => {
+            fetchReposWithRetry(retryCount + 1, nextDelay);
+          }, delay);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+    
+    // Always return the cleanup function
+    return () => {
+      controller.abort();
+    };
+  }, [username, isRateLimited, getCachedRepos, cacheRepos, processReposData]);
 
   useEffect(() => {
-    const fetchRepos = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
-        
-        if (!response.ok) {
-          throw new Error(`GitHub API error: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        // Sort repos: featured first, then by stars
-        const sortedRepos = data.sort((a: GitHubRepo, b: GitHubRepo) => {
-          // Featured repos first
-          const aFeatured = featured.includes(a.name);
-          const bFeatured = featured.includes(b.name);
-          
-          if (aFeatured && !bFeatured) return -1;
-          if (!aFeatured && bFeatured) return 1;
-          
-          // Then by stars
-          return b.stargazers_count - a.stargazers_count;
-        });
-        
-        // Pre-filter repos if filterTopics is provided
-        let filteredByTopics = sortedRepos;
-        if (filterTopics.length > 0) {
-          filteredByTopics = sortedRepos.filter(repo => 
-            repo.topics.some(topic => filterTopics.includes(topic))
-          );
-        }
-        
-        setRepos(filteredByTopics);
-        setFilteredRepos(filteredByTopics);
-        
-        // Extract all unique topics for filtering
-        const allTopics = new Set<string>();
-        
-        // If filterTopics is provided, only use those topics
-        if (filterTopics.length > 0) {
-          filterTopics.forEach(topic => allTopics.add(topic));
-        } else {
-          filteredByTopics.forEach((repo: GitHubRepo) => {
-            repo.topics.forEach((topic: string) => allTopics.add(topic));
-          });
-        }
-        
-        setAvailableTopics(Array.from(allTopics).sort());
-        
-        // Select the first repo by default
-        if (filteredByTopics.length > 0) {
-          setSelectedRepo(filteredByTopics[0]);
-        }
-      } catch (err) {
-        console.error('Error fetching GitHub repos:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch GitHub repositories');
-      } finally {
-        setLoading(false);
-      }
+    let cleanupFunction: (() => void) | undefined;
+    
+    const executeEffect = async () => {
+      cleanupFunction = await fetchReposWithRetry();
     };
     
-    fetchRepos();
-  }, [username, featured, filterTopics]);
+    executeEffect();
+    
+    return () => {
+      if (cleanupFunction) cleanupFunction();
+    };
+  }, [fetchReposWithRetry]);
 
   // Apply filter when selectedTopic changes
   useEffect(() => {
@@ -343,7 +546,12 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = ({
   if (loading) {
     return (
       <Container>
-        <LoadingText>Loading GitHub projects...</LoadingText>
+        <Fieldset legend="GitHub Projects">
+          <LoadingContainer>
+            <LoadingText>Loading repositories</LoadingText>
+            <LoadingIndicator />
+          </LoadingContainer>
+        </Fieldset>
       </Container>
     );
   }
@@ -351,7 +559,9 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = ({
   if (error) {
     return (
       <Container>
-        <ErrorText>Error: {error}</ErrorText>
+        <Fieldset legend="GitHub Projects">
+          <ErrorText>{error}</ErrorText>
+        </Fieldset>
       </Container>
     );
   }
@@ -495,6 +705,6 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = ({
       )}
     </Container>
   );
-};
+});
 
 export default GitHubProjectViewer; 
