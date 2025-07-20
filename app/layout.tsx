@@ -27,7 +27,7 @@ export default function RootLayout({
       </head>
       <body>
         <StyledComponentsRegistry>
-          <FontPreload />
+          {/* <FontPreload /> */}
           <CVProvider>
             {children}
           </CVProvider>
