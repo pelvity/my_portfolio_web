@@ -14,9 +14,7 @@
 
 @import "tailwindcss";
 
-/* Import React95 core styles */
-@import '@react95/core/GlobalStyle';
-@import '@react95/core/themes/win95.css';
+/* React95 styles are imported in layout.tsx and page.tsx */
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -36,6 +34,8 @@ body {
   font-family: var(--font-ms-sans);
   margin: 0;
   padding: 0;
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 /* Global Font Rules */
@@ -96,4 +96,14 @@ h3, h4, h5, h6 {
 
 ::-webkit-scrollbar-corner {
   background-color: #c0c0c0;
+}
+
+/* Make Clippy visible */
+.clippy, .clippy-balloon {
+  z-index: 9999 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  position: fixed !important;
 }

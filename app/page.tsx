@@ -10,8 +10,11 @@ import TaskBar from '../lib/components/TaskBar';
 import WindowManager from '../lib/components/WindowManager';
 import ClippyAssistant from '../lib/components/ClippyAssistant';
 
-  function HomeContent() {
+function HomeContent() {
+  console.log('HomeContent component rendering');
   const { clippy } = useClippy();
+  console.log('useClippy hook called, clippy object available:', !!clippy);
+  
   const [showStartMenu, setShowStartMenu] = useState(false);
   const [openWindows, setOpenWindows] = useState({
     about: false,
@@ -23,6 +26,75 @@ import ClippyAssistant from '../lib/components/ClippyAssistant';
     pdf: false,
   });
   
+  // Add global styles to force Clippy visibility
+  useEffect(() => {
+    // Create style element
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = `
+      /* Force Clippy to be visible */
+      .clippy, 
+      .agent,
+      .agent-clippy,
+      .agent-container,
+      [class*="agent"] {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 9999 !important;
+        pointer-events: auto !important;
+      }
+      
+      /* Target hidden attribute on clippy div */
+      div.clippy[hidden],
+      div[class*="agent"][hidden] {
+        display: block !important;
+        hidden: false !important;
+        visibility: visible !important;
+      }
+      
+      /* Check if clippy is inside an iframe */
+      iframe[id*="clippy"],
+      iframe[class*="agent"],
+      iframe[class*="clippy"] {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        z-index: 10000 !important;
+      }
+    `;
+    document.head.appendChild(styleElement);
+    
+    // Find and directly modify the clippy element after a delay
+    setTimeout(() => {
+      console.log("Looking for clippy elements to unhide...");
+      
+      // Check for hidden divs with clippy class
+      const clippyDivs = document.querySelectorAll('div.clippy, div[class*="agent"]');
+      clippyDivs.forEach(div => {
+        console.log("Found clippy-like div:", div);
+        if (div instanceof HTMLElement) {
+          div.hidden = false;
+          div.style.display = 'block';
+          div.style.visibility = 'visible';
+          div.style.opacity = '1';
+        }
+      });
+      
+      // Also check for any iframes that might contain Clippy
+      const iframes = document.querySelectorAll('iframe');
+      iframes.forEach(iframe => {
+        console.log("Checking iframe:", iframe.id || iframe.className);
+      });
+      
+    }, 1000);
+    
+    console.log('Added global styles for Clippy visibility');
+    
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
+
   // Window positions state
   const [windowPositions, setWindowPositions] = useState<WindowPositions>({
     about: { x: 50, y: 50 },
@@ -48,22 +120,33 @@ import ClippyAssistant from '../lib/components/ClippyAssistant';
     pdf: { width: 600, height: 800 },
   });
   
+  // Add Clippy CSS and ensure it's visible on mount
   useEffect(() => {
-    // Show Clippy's greeting animation after component loads
-    if (clippy) {
-      setTimeout(() => {
+    console.log('Main Clippy useEffect running');
+    
+    // Ensure Clippy is visible after a short delay
+    const timer = setTimeout(() => {
+      if (clippy) {
+        console.log('Main: Clippy object available, playing Greeting');
         // Choose animation based on open windows
-        if (openWindows.projects && openWindows.cv && openWindows.resume) {
-          clippy.play('Greeting');
-          // Optionally after a brief delay, make a comment about the open windows
-          setTimeout(() => {
-            if (clippy) clippy.play('GestureRight');
-          }, 2000);
-        } else {
-          clippy.play('Greeting');
-        }
-      }, 1000);
-    }
+        clippy.play('Greeting');
+        
+        // Optionally after a brief delay, make a comment about the open windows
+        setTimeout(() => {
+          if (clippy) {
+            console.log('Main: Playing GestureRight animation');
+            clippy.play('GestureRight');
+          }
+        }, 2000);
+      } else {
+        console.error('Main: Clippy object not available after timeout');
+      }
+    }, 1000);
+    
+    return () => {
+      console.log('Cleaning up main Clippy timer');
+      clearTimeout(timer);
+    };
   }, [clippy, openWindows.projects, openWindows.cv, openWindows.resume]);
 
   const toggleStartMenu = () => {
@@ -125,7 +208,7 @@ import ClippyAssistant from '../lib/components/ClippyAssistant';
         onSizeChange={handleSizeChange}
         onWaveClippy={handleWaveClippy}
       />
-            
+      
       <ClippyAssistant 
         initialMessage="Hi there! I'm Clippy. I see you've got your projects and CV open. Can I help with anything?"
       />
@@ -140,6 +223,7 @@ import ClippyAssistant from '../lib/components/ClippyAssistant';
 }
 
 export default function Home() {
+  console.log('Home component rendering with ClippyProvider');
   return (
     <ClippyProvider agentName={AGENTS.CLIPPY}>
       <HomeContent />
