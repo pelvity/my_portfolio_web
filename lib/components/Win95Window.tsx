@@ -131,25 +131,25 @@ const Win95Window: React.FC<Win95WindowProps> = ({
           x: e.clientX - dragOffset.x,
           y: e.clientY - dragOffset.y
         };
-        
+
         // Keep window on screen
         const boundedPosition = {
           x: Math.max(0, Math.min(newPosition.x, window.innerWidth - 100)),
           y: Math.max(0, Math.min(newPosition.y, window.innerHeight - 100))
         };
-        
+
         if (onPositionChange) {
           onPositionChange(boundedPosition);
         }
       } else if (isResizing && resizable) {
         const deltaX = e.clientX - resizeStartPos.x;
         const deltaY = e.clientY - resizeStartPos.y;
-        
+
         const newSize = {
           width: Math.max(200, resizeStartSize.width + deltaX),
           height: Math.max(150, resizeStartSize.height + deltaY)
         };
-        
+
         if (onSizeChange) {
           onSizeChange(newSize);
         }
@@ -174,25 +174,25 @@ const Win95Window: React.FC<Win95WindowProps> = ({
 
   const handleMouseDown = (e: React.MouseEvent) => {
     onActivate();
-    
+
     const headerElement = headerRef.current;
     if (headerElement) {
-      const rect = headerElement.getBoundingClientRect();
+      // const rect = headerElement.getBoundingClientRect();
       setDragOffset({
         x: e.clientX - position.x,
         y: e.clientY - position.y
       });
       setIsDragging(true);
     }
-    
+
     e.preventDefault();
   };
 
   const handleResizeMouseDown = (e: React.MouseEvent) => {
     if (!resizable) return;
-    
+
     onActivate();
-    
+
     setIsResizing(true);
     setResizeStartPos({
       x: e.clientX,
@@ -202,22 +202,22 @@ const Win95Window: React.FC<Win95WindowProps> = ({
       width: size.width,
       height: size.height
     });
-    
+
     e.preventDefault();
   };
 
   if (!isOpen) return null;
 
   return (
-    <WindowFrame 
-      $position={position} 
-      $width={size.width} 
-      $height={size.height} 
+    <WindowFrame
+      $position={position}
+      $width={size.width}
+      $height={size.height}
       $zIndex={zIndex}
       onClick={onActivate}
     >
-      <WindowHeader 
-        ref={headerRef} 
+      <WindowHeader
+        ref={headerRef}
         onMouseDown={handleMouseDown}
       >
         <WindowTitle>

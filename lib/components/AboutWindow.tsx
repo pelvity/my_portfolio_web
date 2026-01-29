@@ -41,7 +41,7 @@ const AboutWindow: React.FC<AboutWindowProps> = ({
     >
       <div style={{ padding: '16px', height: '100%', overflow: 'auto' }}>
         <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'center' }}>
-          <button 
+          <button
             onClick={onWaveClippy}
             style={{
               padding: '5px 10px',
@@ -55,14 +55,14 @@ const AboutWindow: React.FC<AboutWindowProps> = ({
         </div>
         <Fieldset legend="About This Portfolio">
           <p style={{ fontSize: '12px', margin: '0 0 8px 0' }}>
-            This portfolio is designed as a Windows 95-style operating system interface, 
+            This portfolio is designed as a Windows 95-style operating system interface,
             showcasing my work and skills in a nostalgic and interactive way.
           </p>
           <p style={{ fontSize: '12px', margin: '0 0 8px 0' }}>
-            Navigate through the various "programs" by clicking on desktop icons or using the Start menu.
+            Navigate through the various &quot;programs&quot; by clicking on desktop icons or using the Start menu.
           </p>
         </Fieldset>
-        
+
         <Fieldset legend="How To Use" style={{ marginTop: '16px' }}>
           <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '12px' }}>
             <li>Click on desktop icons to open windows</li>
@@ -72,7 +72,7 @@ const AboutWindow: React.FC<AboutWindowProps> = ({
             <li>Close windows with the X button</li>
           </ul>
         </Fieldset>
-        
+
         <Fieldset legend="Technologies Used" style={{ marginTop: '16px' }}>
           <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '12px' }}>
             <li>Next.js & React</li>

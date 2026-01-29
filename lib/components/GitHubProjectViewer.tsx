@@ -34,17 +34,17 @@ const StyledSelect = styled.select<{ width?: number }>`
 
 const Select: React.FC<SelectProps> = ({ options, onChange, value, defaultValue, width }) => {
   // Only use value if provided, otherwise use defaultValue
-  const selectProps: any = {
+  const selectProps: Record<string, unknown> = {
     onChange,
     width
   };
-  
+
   if (value !== undefined) {
     selectProps.value = value;
   } else if (defaultValue !== undefined) {
     selectProps.defaultValue = defaultValue;
   }
-  
+
   return (
     <StyledSelect {...selectProps}>
       {options.map(option => (
@@ -282,9 +282,9 @@ const ClearFilterButton = styled.button`
   }
 `;
 
-const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({ 
-  username, 
-  featured = [], 
+const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
+  username,
+  featured = [],
   filterTopics = ["showcase"],
   showAllOption = true
 }) => {
@@ -300,19 +300,19 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
   // Function to get cached repos
   const getCachedRepos = useCallback(() => {
     if (typeof window === 'undefined') return null;
-    
+
     try {
       const cacheExpiry = localStorage.getItem(GITHUB_CACHE_EXPIRY_KEY);
       const cacheData = localStorage.getItem(GITHUB_CACHE_KEY);
-      
+
       if (!cacheExpiry || !cacheData) return null;
-      
+
       const expiryTime = parseInt(cacheExpiry, 10);
-      
+
       // Check if cache is still valid
       if (Date.now() < expiryTime) {
         const data = JSON.parse(cacheData);
-        
+
         // Make sure we're getting data for the right username
         if (data.username === username) {
           return data.repos;
@@ -321,20 +321,20 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
     } catch (err) {
       console.error('Error reading from cache:', err);
     }
-    
+
     return null;
   }, [username]);
 
   // Function to cache repos
   const cacheRepos = useCallback((repos: GitHubRepo[]) => {
     if (typeof window === 'undefined') return;
-    
+
     try {
       const cacheData = {
         username,
         repos
       };
-      
+
       localStorage.setItem(GITHUB_CACHE_KEY, JSON.stringify(cacheData));
       localStorage.setItem(GITHUB_CACHE_EXPIRY_KEY, (Date.now() + CACHE_TTL).toString());
     } catch (err) {
@@ -349,31 +349,31 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
       // Featured repos first
       const aFeatured = featured.includes(a.name);
       const bFeatured = featured.includes(b.name);
-      
+
       if (aFeatured && !bFeatured) return -1;
       if (!aFeatured && bFeatured) return 1;
-      
+
       // Then sort by update date
       return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
     });
-    
+
     setRepos(sortedRepos);
-    
+
     // Extract all unique topics from repos
     const allTopics = Array.from(
       new Set(
         sortedRepos.flatMap(repo => repo.topics)
       )
     ).sort();
-    
+
     setAvailableTopics(allTopics);
-    
+
     // Initial filtering
     if (filterTopics && filterTopics.length > 0) {
       // Find the first filter topic that exists in our repos
       const initialTopic = filterTopics.find(topic => allTopics.includes(topic)) || null;
       setSelectedTopic(initialTopic);
-      
+
       if (initialTopic) {
         setFilteredRepos(sortedRepos.filter(repo => repo.topics.includes(initialTopic)));
       } else {
@@ -382,7 +382,7 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
     } else {
       setFilteredRepos(sortedRepos);
     }
-    
+
     // Set first repo as selected by default
     if (sortedRepos.length > 0) {
       setSelectedRepo(sortedRepos[0]);
@@ -393,15 +393,15 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
   const fetchReposWithRetry = useCallback(async (retryCount = 0, delay = 1000) => {
     // Create a controller outside the try block so we can access it in the returned cleanup function
     const controller = new AbortController();
-    
+
     try {
       setLoading(true);
-      
+
       // Check if we're rate limited
       if (isRateLimited) {
         throw new Error("API rate limit exceeded. Please try again later.");
       }
-      
+
       // Check cache first
       const cachedData = getCachedRepos();
       if (cachedData) {
@@ -413,7 +413,7 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
           controller.abort();
         };
       }
-      
+
       const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
       const headers: HeadersInit = {};
       if (token) {
@@ -427,43 +427,43 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
         headers,
         signal
       });
-      
+
       // Check for rate limit headers
       const rateLimit = parseInt(response.headers.get('x-ratelimit-remaining') || '1', 10);
       const rateLimitReset = parseInt(response.headers.get('x-ratelimit-reset') || '0', 10) * 1000;
-      
+
       if (rateLimit <= 0) {
         const resetTime = new Date(rateLimitReset);
         const waitTime = Math.max(
           rateLimitReset - Date.now(),
           RATE_LIMIT_COOLDOWN
         );
-        
+
         setIsRateLimited(true);
-        
+
         // Set a timeout to reset the rate limit flag
         setTimeout(() => {
           setIsRateLimited(false);
         }, waitTime);
-        
+
         throw new Error(`GitHub API rate limit exceeded. Resets at ${resetTime.toLocaleTimeString()}`);
       }
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch repositories: ${response.status} ${response.statusText}`);
       }
-      
+
       const data = await response.json();
-      
+
       // Filter out forked repositories (only show your own projects)
       const ownRepos = data.filter((repo: GitHubRepo) => !repo.fork);
-      
+
       // Cache the fetched repos
       cacheRepos(ownRepos);
-      
+
       // Process the repos data
       processReposData(ownRepos);
-      
+
       setError(null);
     } catch (err) {
       if (err instanceof Error) {
@@ -471,10 +471,10 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
           // Do nothing for aborted requests
           return;
         }
-        
+
         console.error('Error fetching GitHub repos:', err.message);
         setError(err.message);
-        
+
         // If we have network errors, try to retry with exponential backoff
         if (retryCount < 3 && !isRateLimited && err.message.includes('fetch')) {
           const nextDelay = delay * 2;
@@ -486,7 +486,7 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
     } finally {
       setLoading(false);
     }
-    
+
     // Always return the cleanup function
     return () => {
       controller.abort();
@@ -495,13 +495,13 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
 
   useEffect(() => {
     let cleanupFunction: (() => void) | undefined;
-    
+
     const executeEffect = async () => {
       cleanupFunction = await fetchReposWithRetry();
     };
-    
+
     executeEffect();
-    
+
     return () => {
       if (cleanupFunction) cleanupFunction();
     };
@@ -510,15 +510,15 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
   // Apply filter when selectedTopic changes
   useEffect(() => {
     if (selectedTopic) {
-      const filtered = repos.filter(repo => 
+      const filtered = repos.filter(repo =>
         repo.topics.includes(selectedTopic)
       );
       setFilteredRepos(filtered);
-      
+
       // Update selected repo if it's not in filtered results
-      if (filtered.length > 0 && 
-          selectedRepo && 
-          !filtered.some(repo => repo.id === selectedRepo.id)) {
+      if (filtered.length > 0 &&
+        selectedRepo &&
+        !filtered.some(repo => repo.id === selectedRepo.id)) {
         setSelectedRepo(filtered[0]);
       }
     } else {
@@ -528,17 +528,17 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   };
-  
+
   const handleTopicSelect = (topic: string) => {
     setSelectedTopic(selectedTopic === topic ? null : topic);
   };
-  
+
   const clearFilter = () => {
     setSelectedTopic(null);
   };
@@ -575,7 +575,7 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
       {showFilter && (
         <FilterContainer>
           <FilterLabel>Filter by topic:</FilterLabel>
-          <Select 
+          <Select
             defaultValue=""
             options={[
               ...(showAllOption ? [{ value: "", label: "All Topics" }] : []),
@@ -602,10 +602,10 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
         ) : (
           <ProjectsGrid>
             {filteredRepos.map(repo => (
-              <ProjectCard 
-                key={repo.id} 
+              <ProjectCard
+                key={repo.id}
                 onClick={() => setSelectedRepo(repo)}
-                style={{ 
+                style={{
                   background: selectedRepo?.id === repo.id ? '#d9d9d9' : '#c0c0c0',
                   borderColor: selectedRepo?.id === repo.id ? '#000080' : undefined
                 }}
@@ -626,7 +626,7 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
                 {repo.topics && repo.topics.length > 0 && (
                   <ProjectTopics>
                     {repo.topics.slice(0, 3).map(topic => (
-                      <TopicTag 
+                      <TopicTag
                         key={topic}
                         className={selectedTopic === topic ? 'active' : ''}
                         onClick={(e: MouseEvent<HTMLSpanElement>) => {
@@ -657,23 +657,23 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
               <ProjectDescription>
                 {selectedRepo.description || 'No description available'}
               </ProjectDescription>
-              
+
               <ProjectStats>
                 <span>Created: {formatDate(selectedRepo.created_at)}</span>
                 <span>Updated: {formatDate(selectedRepo.updated_at)}</span>
               </ProjectStats>
-              
+
               <ProjectStats>
                 <span>Language: {selectedRepo.language || 'Various'}</span>
                 <span>Stars: {selectedRepo.stargazers_count}</span>
                 <span>Forks: {selectedRepo.forks_count}</span>
               </ProjectStats>
-              
+
               {selectedRepo.topics && selectedRepo.topics.length > 0 && (
                 <ProjectTopics>
                   {selectedRepo.topics.map(topic => (
-                    <TopicTag 
-                      key={topic} 
+                    <TopicTag
+                      key={topic}
                       className={selectedTopic === topic ? 'active' : ''}
                       onClick={(e: MouseEvent<HTMLSpanElement>) => {
                         e.stopPropagation();
@@ -685,13 +685,13 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
                   ))}
                 </ProjectTopics>
               )}
-              
+
               <ButtonsContainer>
                 <LinkButton href={selectedRepo.html_url} target="_blank" rel="noopener noreferrer">
                   <IconWrapper><Computer style={{ width: 16, height: 16 }} /></IconWrapper>
                   View on GitHub
                 </LinkButton>
-                
+
                 {selectedRepo.homepage && (
                   <LinkButton href={selectedRepo.homepage} target="_blank" rel="noopener noreferrer">
                     <IconWrapper><Globe style={{ width: 16, height: 16 }} /></IconWrapper>
@@ -706,5 +706,7 @@ const GitHubProjectViewer: React.FC<GitHubProjectViewerProps> = React.memo(({
     </Container>
   );
 });
+
+GitHubProjectViewer.displayName = 'GitHubProjectViewer';
 
 export default GitHubProjectViewer; 

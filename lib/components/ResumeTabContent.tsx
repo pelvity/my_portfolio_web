@@ -116,14 +116,14 @@ const ButtonIcon = styled.span`
 // Tab content components
 export const OverviewTab: React.FC = () => {
   const { cvData, loading } = useCVContext();
-  
+
   if (loading || !cvData) return null;
-  
+
   return (
     <>
       <ResumeTitle>{cvData.basics.name}</ResumeTitle>
       <ResumeSubtitle>{cvData.basics.title}</ResumeSubtitle>
-      
+
       <Fieldset legend="Summary" style={{ marginBottom: '1em' }}>
         <ItemDescription>{cvData.basics.summary}</ItemDescription>
       </Fieldset>
@@ -133,9 +133,9 @@ export const OverviewTab: React.FC = () => {
 
 export const ExperienceTab: React.FC = () => {
   const { cvData, loading } = useCVContext();
-  
+
   if (loading || !cvData) return null;
-  
+
   return (
     <>
       {cvData.experience.map((exp, index) => (
@@ -158,9 +158,9 @@ export const ExperienceTab: React.FC = () => {
 
 export const EducationTab: React.FC = () => {
   const { cvData, loading } = useCVContext();
-  
+
   if (loading || !cvData) return null;
-  
+
   return (
     <>
       {cvData.education.map((edu, index) => (
@@ -176,9 +176,9 @@ export const EducationTab: React.FC = () => {
 
 export const SkillsTab: React.FC = () => {
   const { cvData, loading } = useCVContext();
-  
+
   if (loading || !cvData) return null;
-  
+
   // Group skills by category
   const categories = cvData.skills.reduce((acc, skill) => {
     const category = skill.category || 'Other';
@@ -188,10 +188,10 @@ export const SkillsTab: React.FC = () => {
     acc[category].push(skill);
     return acc;
   }, {} as Record<string, typeof cvData.skills>);
-  
+
   return (
     <>
-      {Object.entries(categories).map(([category, skills], categoryIndex) => (
+      {Object.entries(categories).map(([category, skills]) => (
         <Fieldset legend={category} style={{ marginBottom: '1em' }} key={category}>
           <SkillsContainer>
             {skills.map((skill, index) => (
@@ -208,15 +208,15 @@ export const SkillsTab: React.FC = () => {
 
 export const LanguagesTab: React.FC = () => {
   const { cvData, loading } = useCVContext();
-  
+
   if (loading || !cvData || !cvData.languages) return null;
-  
+
   return (
     <>
       <Fieldset legend="Languages" style={{ marginBottom: '1em' }}>
         <SkillsContainer>
           {cvData.languages.map((language, index) => (
-            <SkillItem key={index} style={{ 
+            <SkillItem key={index} style={{
               fontWeight: language.level === 'Native' ? 'bold' : 'normal'
             }}>
               {language.name} ({language.level})
@@ -233,19 +233,19 @@ export const DownloadTab: React.FC = () => {
     <>
       <Fieldset legend="Download Resume" style={{ marginBottom: '1em' }}>
         <ItemDescription>Download my resume in your preferred format:</ItemDescription>
-        
+
         <div style={{ marginTop: 16 }}>
           <DownloadButton href="/assets/resume.pdf" download>
             <ButtonIcon><Doc /></ButtonIcon>
             PDF Format
           </DownloadButton>
-          
+
           <DownloadButton href="/assets/resume.docx" download>
             <ButtonIcon><Doc /></ButtonIcon>
             Word Format
           </DownloadButton>
         </div>
-        
+
         <ItemDescription style={{ marginTop: 16 }}>
           Note: These are the original formatted versions of my resume, which may contain additional details
           not shown in this viewer.

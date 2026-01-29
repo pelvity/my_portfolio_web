@@ -62,7 +62,7 @@ const ContactWindowContent: React.FC<ContactWindowContentProps> = () => {
         <Mail style={{ width: 24, height: 24 }} />
         <HeaderTitle>Get In Touch</HeaderTitle>
       </ContactHeader>
-      
+
       <Fieldset legend="Contact Information" style={{ marginBottom: '1em' }}>
         <ContactItem><strong>Name:</strong> {cvData.basics.name}</ContactItem>
         <ContactItem><strong>Email:</strong> {contact.email}</ContactItem>
@@ -89,10 +89,10 @@ const ContactWindowContent: React.FC<ContactWindowContentProps> = () => {
           </ContactItem>
         )}
       </Fieldset>
-      
+
       <Fieldset legend="Message">
         <ContactItem>
-          Feel free to reach out if you'd like to collaborate on a project
+          Feel free to reach out if you&apos;d like to collaborate on a project
           or just want to say hello!
         </ContactItem>
       </Fieldset>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import StyledComponentsRegistry from "../lib/registry";
-import FontPreload from "../lib/components/FontPreload";
+
 import { CVProvider } from "../lib/contexts/CVContext";
 
 export const metadata: Metadata = {
