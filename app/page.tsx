@@ -9,12 +9,13 @@ import Desktop from '../lib/components/Desktop';
 import TaskBar from '../lib/components/TaskBar';
 import WindowManager from '../lib/components/WindowManager';
 import ClippyAssistant from '../lib/components/ClippyAssistant';
+import { initializeWindowLayout, getResponsiveWindows, calculateWindowSize, calculateWindowPosition, WINDOW_CONFIGS } from '../lib/windowConfig';
 
 function HomeContent() {
   console.log('HomeContent component rendering');
   const { clippy } = useClippy();
   console.log('useClippy hook called, clippy object available:', !!clippy);
-  
+
   const [showStartMenu, setShowStartMenu] = useState(false);
   const [openWindows, setOpenWindows] = useState({
     about: false,
@@ -24,8 +25,9 @@ function HomeContent() {
     cv: true,
     contract: false,
     pdf: false,
+    lafleur: true, // Open La Fleur website on start
   });
-  
+
   // Add global styles to force Clippy visibility
   useEffect(() => {
     // Create style element
@@ -63,11 +65,11 @@ function HomeContent() {
       }
     `;
     document.head.appendChild(styleElement);
-    
+
     // Find and directly modify the clippy element after a delay
     setTimeout(() => {
       console.log("Looking for clippy elements to unhide...");
-      
+
       // Check for hidden divs with clippy class
       const clippyDivs = document.querySelectorAll('div.clippy, div[class*="agent"]');
       clippyDivs.forEach(div => {
@@ -79,58 +81,86 @@ function HomeContent() {
           div.style.opacity = '1';
         }
       });
-      
+
       // Also check for any iframes that might contain Clippy
       const iframes = document.querySelectorAll('iframe');
       iframes.forEach(iframe => {
         console.log("Checking iframe:", iframe.id || iframe.className);
       });
-      
+
     }, 1000);
-    
+
     console.log('Added global styles for Clippy visibility');
-    
+
     return () => {
       document.head.removeChild(styleElement);
     };
   }, []);
 
-  // Window positions state
-  const [windowPositions, setWindowPositions] = useState<WindowPositions>({
-    about: { x: 50, y: 50 },
-    projects: { x: 50, y: 350 }, // Top-left
-    resume: { x: 150, y: 150 },
-    contact: { x: 1300, y: 50 }, // Top-right
-    cv: { x: 500, y: 50 }, // Top-center
-    contract: { x: 50, y: 80 },
-    pdf: { x: 300, y: 120 },
+  // Initialize window positions and sizes from config
+  const [windowPositions, setWindowPositions] = useState<WindowPositions>(() => {
+    if (typeof window !== 'undefined') {
+      const { positions } = initializeWindowLayout(window.innerWidth, window.innerHeight);
+      return positions;
+    }
+    // Fallback for SSR
+    return {} as WindowPositions;
   });
-  
-  // Keep track of active window for z-index management
-  const [activeWindow, setActiveWindow] = useState<WindowName>('projects');
 
-  // Window sizes state
-  const [windowSizes, setWindowSizes] = useState<WindowSizes>({
-    about: { width: 400, height: 300 },
-    projects: { width: 550, height: 450 }, // Increased size
-    contact: { width: 350, height: 300 },
-    resume: { width: 400, height: 400 },
-    contract: { width: 550, height: 450 },
-    cv: { width: 700, height: 500 },
-    pdf: { width: 600, height: 800 },
+  const [windowSizes, setWindowSizes] = useState<WindowSizes>(() => {
+    if (typeof window !== 'undefined') {
+      const { sizes } = initializeWindowLayout(window.innerWidth, window.innerHeight);
+      return sizes;
+    }
+    // Fallback for SSR
+    return {} as WindowSizes;
   });
-  
+
+  // Keep track of active window for z-index management
+  const [activeWindow, setActiveWindow] = useState<WindowName>('lafleur');
+
+  // Handle responsive window resizing
+  useEffect(() => {
+    const handleResize = () => {
+      const responsiveWindows = getResponsiveWindows();
+
+      responsiveWindows.forEach((windowName) => {
+        const config = WINDOW_CONFIGS[windowName];
+        const size = calculateWindowSize(config, window.innerWidth, window.innerHeight);
+        const position = calculateWindowPosition(config, size, window.innerWidth, window.innerHeight);
+
+        setWindowSizes(prev => ({
+          ...prev,
+          [windowName]: size,
+        }));
+
+        setWindowPositions(prev => ({
+          ...prev,
+          [windowName]: position,
+        }));
+      });
+    };
+
+    // Initial calculation
+    handleResize();
+
+    // Update on resize
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Add Clippy CSS and ensure it's visible on mount
   useEffect(() => {
     console.log('Main Clippy useEffect running');
-    
+
     // Ensure Clippy is visible after a short delay
     const timer = setTimeout(() => {
       if (clippy) {
         console.log('Main: Clippy object available, playing Greeting');
         // Choose animation based on open windows
         clippy.play('Greeting');
-        
+
         // Optionally after a brief delay, make a comment about the open windows
         setTimeout(() => {
           if (clippy) {
@@ -142,7 +172,7 @@ function HomeContent() {
         console.error('Main: Clippy object not available after timeout');
       }
     }, 1000);
-    
+
     return () => {
       console.log('Cleaning up main Clippy timer');
       clearTimeout(timer);
@@ -197,7 +227,7 @@ function HomeContent() {
 
   return (
     <Desktop onOpenWindow={openWindow}>
-      <WindowManager 
+      <WindowManager
         openWindows={openWindows}
         windowPositions={windowPositions}
         windowSizes={windowSizes}
@@ -208,12 +238,12 @@ function HomeContent() {
         onSizeChange={handleSizeChange}
         onWaveClippy={handleWaveClippy}
       />
-      
-      <ClippyAssistant 
+
+      <ClippyAssistant
         initialMessage="Hi there! I'm Clippy. I see you've got your projects and CV open. Can I help with anything?"
       />
 
-      <TaskBar 
+      <TaskBar
         showStartMenu={showStartMenu}
         toggleStartMenu={toggleStartMenu}
         openWindow={openWindow}
