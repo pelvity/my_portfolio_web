@@ -7,7 +7,7 @@ import Win95Window from './Win95Window';
 import GitHubProjectViewer from './GitHubProjectViewer';
 import ContactWindowContent from './ContactWindow';
 import ResumeViewer from './ResumeViewer';
-import { FolderFile, Mail, Doc, FileFind, Help } from '@react95/icons';
+import { FolderFile, Mail, Doc, FileFind, Help, Computer } from '@react95/icons';
 
 interface WindowManagerProps {
   openWindows: {
@@ -43,7 +43,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({
     <>
       {/* About Me Window */}
       {openWindows.about && (
-        <AboutWindow 
+        <AboutWindow
           isOpen={openWindows.about}
           onClose={() => onCloseWindow('about')}
           position={windowPositions.about}
@@ -70,9 +70,9 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onPositionChange={(pos) => onPositionChange('projects', pos)}
           onSizeChange={(size) => onSizeChange('projects', size)}
         >
-          <GitHubProjectViewer 
-            username="pelvity" 
-            featured={["my_portfolio_web", "flowersshop"]} 
+          <GitHubProjectViewer
+            username="pelvity"
+            featured={["my_portfolio_web", "flowersshop"]}
             filterTopics={["showcase", "react", "nextjs", "portfolio"]}
           />
         </Win95Window>
@@ -95,7 +95,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           <ResumeViewer />
         </Win95Window>
       )}
-      
+
       {/* PDF CV Window */}
       {openWindows.pdf && (
         <Win95Window
@@ -157,7 +157,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({
 
       {/* CV Window (Windows XP Style) */}
       {openWindows.cv && (
-        <CVWindow 
+        <CVWindow
           isOpen={openWindows.cv}
           onClose={() => onCloseWindow('cv')}
           initialPosition={{ x: windowPositions.cv.x, y: windowPositions.cv.y }}
@@ -165,9 +165,50 @@ const WindowManager: React.FC<WindowManagerProps> = ({
         />
       )}
 
+      {/* La Fleur Website Preview Window */}
+      {openWindows.lafleur && (
+        <Win95Window
+          title="La Fleur - Flower Shop"
+          icon={<Computer style={{ width: 16, height: 16 }} />}
+          isOpen={openWindows.lafleur}
+          onClose={() => onCloseWindow('lafleur')}
+          position={windowPositions.lafleur || { x: 600, y: 100 }}
+          size={windowSizes.lafleur || { width: 800, height: 600 }}
+          zIndex={getWindowZIndex('lafleur')}
+          onActivate={() => onActivateWindow('lafleur')}
+          onPositionChange={(pos) => onPositionChange('lafleur', pos)}
+          onSizeChange={(size) => onSizeChange('lafleur', size)}
+        >
+          <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ padding: '2px', background: '#c0c0c0', borderBottom: '1px solid #808080', textAlign: 'left' }}>
+              <a
+                href="https://www.lafleur-lublin.com/pl"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <button style={{ background: '#c0c0c0', border: '1px solid #c0c0c0', padding: '2px 5px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Help style={{ width: 16, height: 16, marginRight: '5px' }} />
+                    Open in New Tab
+                  </div>
+                </button>
+              </a>
+            </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <iframe
+                src="https://www.lafleur-lublin.com/pl"
+                style={{ border: 'none', height: '100%', width: '100%' }}
+                title="La Fleur Website Preview"
+              />
+            </div>
+          </div>
+        </Win95Window>
+      )}
+
       {/* Contract Window */}
       {openWindows.contract && (
-        <ContractWindow 
+        <ContractWindow
           isOpen={openWindows.contract}
           onClose={() => onCloseWindow('contract')}
           position={windowPositions.contract}

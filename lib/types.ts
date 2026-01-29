@@ -1,5 +1,5 @@
 // Define window types
-export type WindowName = 'about' | 'projects' | 'contact' | 'resume' | 'contract' | 'cv' | 'pdf';
+export type WindowName = 'about' | 'projects' | 'contact' | 'resume' | 'contract' | 'cv' | 'pdf' | 'lafleur';
 
 export type WindowState = {
   [key in WindowName]: boolean;
