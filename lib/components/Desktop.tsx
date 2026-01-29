@@ -1,5 +1,5 @@
 import React from 'react';
-import { FolderFile, Mail, Doc, FileFind } from '@react95/icons';
+import { FolderFile, Mail, Doc, FileFind, Computer } from '@react95/icons';
 import { Desktop as StyledDesktop, DesktopIcon, IconText } from '../styles/WindowStyles';
 import { WindowName } from '../types';
 
@@ -19,12 +19,12 @@ const Desktop: React.FC<DesktopProps> = ({ onOpenWindow, children }) => {
           <FolderFile style={{ width: 32, height: 32 }} />
           <IconText>My Github Projects</IconText>
         </DesktopIcon>
-        
+
         <DesktopIcon onClick={() => onOpenWindow('contact')}>
           <Mail style={{ width: 32, height: 32 }} />
           <IconText>Contact</IconText>
         </DesktopIcon>
-        
+
         <DesktopIcon onClick={() => onOpenWindow('cv')}>
           <FileFind style={{ width: 32, height: 32 }} />
           <IconText>My CV</IconText>
@@ -34,8 +34,13 @@ const Desktop: React.FC<DesktopProps> = ({ onOpenWindow, children }) => {
           <Doc style={{ width: 32, height: 32 }} />
           <IconText>CV PDF</IconText>
         </DesktopIcon>
+
+        <DesktopIcon onClick={() => onOpenWindow('lafleur')}>
+          <Computer style={{ width: 32, height: 32 }} />
+          <IconText>La Fleur Website</IconText>
+        </DesktopIcon>
       </div>
-      
+
       {children}
     </StyledDesktop>
   );
