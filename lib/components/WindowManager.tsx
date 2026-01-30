@@ -63,8 +63,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           icon={<FolderFile style={{ width: 16, height: 40 }} />}
           isOpen={openWindows.projects}
           onClose={() => onCloseWindow('projects')}
-          position={windowPositions.projects}
-          size={windowSizes.projects}
+          position={windowPositions.projects || { x: 50, y: 350 }}
+          size={windowSizes.projects || { width: 600, height: 500 }}
           zIndex={getWindowZIndex('projects')}
           onActivate={() => onActivateWindow('projects')}
           onPositionChange={(pos) => onPositionChange('projects', pos)}
@@ -85,8 +85,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           icon={<FileFind style={{ width: 16, height: 16 }} />}
           isOpen={openWindows.resume}
           onClose={() => onCloseWindow('resume')}
-          position={windowPositions.resume}
-          size={windowSizes.resume}
+          position={windowPositions.resume || { x: 150, y: 150 }}
+          size={windowSizes.resume || { width: 400, height: 300 }}
           zIndex={getWindowZIndex('resume')}
           onActivate={() => onActivateWindow('resume')}
           onPositionChange={(pos) => onPositionChange('resume', pos)}
@@ -144,8 +144,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           icon={<Mail style={{ width: 16, height: 16 }} />}
           isOpen={openWindows.contact}
           onClose={() => onCloseWindow('contact')}
-          position={windowPositions.contact}
-          size={windowSizes.contact}
+          position={windowPositions.contact || { x: 1300, y: 50 }}
+          size={windowSizes.contact || { width: 400, height: 300 }}
           zIndex={getWindowZIndex('contact')}
           onActivate={() => onActivateWindow('contact')}
           onPositionChange={(pos) => onPositionChange('contact', pos)}
@@ -160,7 +160,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({
         <CVWindow
           isOpen={openWindows.cv}
           onClose={() => onCloseWindow('cv')}
-          initialPosition={{ x: windowPositions.cv.x, y: windowPositions.cv.y }}
+          initialPosition={windowPositions.cv || { x: 500, y: 50 }}
           zIndex={getWindowZIndex('cv')}
         />
       )}
@@ -211,8 +211,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
         <ContractWindow
           isOpen={openWindows.contract}
           onClose={() => onCloseWindow('contract')}
-          position={windowPositions.contract}
-          size={windowSizes.contract}
+          position={windowPositions.contract || { x: 50, y: 80 }}
+          size={windowSizes.contract || { width: 600, height: 500 }}
           zIndex={getWindowZIndex('contract')}
           onActivate={() => onActivateWindow('contract')}
           onPositionChange={(pos) => onPositionChange('contract', pos)}
