@@ -30,7 +30,7 @@ export const WINDOW_CONFIGS: Record<WindowName, WindowConfigItem> = {
         customPosition: { x: 150, y: 150 },
     },
     contact: {
-        size: 'small',
+        size: 'medium',
         position: 'topRight',
         customPosition: { x: 1300, y: 50 },
     },
