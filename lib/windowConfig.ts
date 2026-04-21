@@ -53,8 +53,14 @@ export const WINDOW_CONFIGS: Record<WindowName, WindowConfigItem> = {
     },
     lafleur: {
         size: 'large',
-        position: 'bottomRight',
-        customPosition: { x: 50, y: 80 },
+        position: 'custom',
+        customPosition: { x: 300, y: 50 },
+        responsive: true,
+    },
+    classduck: {
+        size: 'large',
+        position: 'custom',
+        customPosition: { x: 350, y: 100 },
         responsive: true,
     },
 };
