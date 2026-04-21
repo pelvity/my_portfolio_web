@@ -39,6 +39,11 @@ const Desktop: React.FC<DesktopProps> = ({ onOpenWindow, children }) => {
           <Computer style={{ width: 32, height: 32 }} />
           <IconText>La Fleur Website</IconText>
         </DesktopIcon>
+
+        <DesktopIcon onClick={() => onOpenWindow('classduck')}>
+          <Computer style={{ width: 32, height: 32 }} />
+          <IconText>Classduck</IconText>
+        </DesktopIcon>
       </div>
 
       {children}

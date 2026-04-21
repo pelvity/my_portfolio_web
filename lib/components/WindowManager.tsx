@@ -18,6 +18,8 @@ interface WindowManagerProps {
   activeWindow: WindowName;
   onActivateWindow: (window: WindowName) => void;
   onCloseWindow: (window: WindowName) => void;
+  onMinimizeWindow: (window: WindowName) => void;
+  onMaximizeWindow: (window: WindowName) => void;
   onPositionChange: (window: WindowName, position: { x: number, y: number }) => void;
   onSizeChange: (window: WindowName, size: { width: number, height: number }) => void;
   onWaveClippy: () => void;
@@ -30,6 +32,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
   activeWindow,
   onActivateWindow,
   onCloseWindow,
+  onMinimizeWindow,
+  onMaximizeWindow,
   onPositionChange,
   onSizeChange,
   onWaveClippy
@@ -46,6 +50,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
         <AboutWindow
           isOpen={openWindows.about}
           onClose={() => onCloseWindow('about')}
+          onMinimize={() => onMinimizeWindow('about')}
+          onMaximize={() => onMaximizeWindow('about')}
           position={windowPositions.about}
           size={windowSizes.about}
           zIndex={getWindowZIndex('about')}
@@ -63,6 +69,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           icon={<FolderFile style={{ width: 16, height: 40 }} />}
           isOpen={openWindows.projects}
           onClose={() => onCloseWindow('projects')}
+          onMinimize={() => onMinimizeWindow('projects')}
+          onMaximize={() => onMaximizeWindow('projects')}
           position={windowPositions.projects || { x: 50, y: 350 }}
           size={windowSizes.projects || { width: 600, height: 500 }}
           zIndex={getWindowZIndex('projects')}
@@ -85,6 +93,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           icon={<FileFind style={{ width: 16, height: 16 }} />}
           isOpen={openWindows.resume}
           onClose={() => onCloseWindow('resume')}
+          onMinimize={() => onMinimizeWindow('resume')}
+          onMaximize={() => onMaximizeWindow('maximize')}
           position={windowPositions.resume || { x: 150, y: 150 }}
           size={windowSizes.resume || { width: 400, height: 300 }}
           zIndex={getWindowZIndex('resume')}
@@ -103,6 +113,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           icon={<Doc style={{ width: 16, height: 16 }} />}
           isOpen={openWindows.pdf}
           onClose={() => onCloseWindow('pdf')}
+          onMinimize={() => onMinimizeWindow('pdf')}
+          onMaximize={() => onMaximizeWindow('pdf')}
           position={windowPositions.pdf || { x: 300, y: 120 }}
           size={windowSizes.pdf || { width: 600, height: 800 }}
           zIndex={getWindowZIndex('pdf')}
@@ -144,6 +156,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           icon={<Mail style={{ width: 16, height: 16 }} />}
           isOpen={openWindows.contact}
           onClose={() => onCloseWindow('contact')}
+          onMinimize={() => onMinimizeWindow('contact')}
+          onMaximize={() => onMaximizeWindow('contact')}
           position={windowPositions.contact || { x: 1300, y: 50 }}
           size={windowSizes.contact || { width: 400, height: 300 }}
           zIndex={getWindowZIndex('contact')}
@@ -172,6 +186,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           icon={<Computer style={{ width: 16, height: 16 }} />}
           isOpen={openWindows.lafleur}
           onClose={() => onCloseWindow('lafleur')}
+          onMinimize={() => onMinimizeWindow('lafleur')}
+          onMaximize={() => onMaximizeWindow('lafleur')}
           position={windowPositions.lafleur || { x: 600, y: 100 }}
           size={windowSizes.lafleur || { width: 800, height: 600 }}
           zIndex={getWindowZIndex('lafleur')}
@@ -206,11 +222,56 @@ const WindowManager: React.FC<WindowManagerProps> = ({
         </Win95Window>
       )}
 
+      {/* Classduck Window */}
+      {openWindows.classduck && (
+        <Win95Window
+          title="Classduck"
+          icon={<Computer style={{ width: 16, height: 16 }} />}
+          isOpen={openWindows.classduck}
+          onClose={() => onCloseWindow('classduck')}
+          onMinimize={() => onMinimizeWindow('classduck')}
+          onMaximize={() => onMaximizeWindow('classduck')}
+          position={windowPositions.classduck || { x: 100, y: 100 }}
+          size={windowSizes.classduck || { width: 800, height: 600 }}
+          zIndex={getWindowZIndex('classduck')}
+          onActivate={() => onActivateWindow('classduck')}
+          onPositionChange={(pos) => onPositionChange('classduck', pos)}
+          onSizeChange={(size) => onSizeChange('classduck', size)}
+        >
+          <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ padding: '2px', background: '#c0c0c0', borderBottom: '1px solid #808080', textAlign: 'left' }}>
+              <a
+                href="https://classduck.com/en"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <button style={{ background: '#c0c0c0', border: '1px solid #c0c0c0', padding: '2px 5px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Help style={{ width: 16, height: 16, marginRight: '5px' }} />
+                    Open in New Tab
+                  </div>
+                </button>
+              </a>
+            </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <iframe
+                src="https://classduck.com/en"
+                style={{ border: 'none', height: '100%', width: '100%' }}
+                title="Classduck"
+              />
+            </div>
+          </div>
+        </Win95Window>
+      )}
+
       {/* Contract Window */}
       {openWindows.contract && (
         <ContractWindow
           isOpen={openWindows.contract}
           onClose={() => onCloseWindow('contract')}
+          onMinimize={() => onMinimizeWindow('contract')}
+          onMaximize={() => onMaximizeWindow('contract')}
           position={windowPositions.contract || { x: 50, y: 80 }}
           size={windowSizes.contract || { width: 600, height: 500 }}
           zIndex={getWindowZIndex('contract')}

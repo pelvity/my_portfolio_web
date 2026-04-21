@@ -57,6 +57,10 @@ const TaskBar: React.FC<TaskBarProps> = ({
             <Doc style={{ width: 20, height: 20, marginRight: '10px' }} />
             CV PDF
           </MenuItem>
+          <MenuItem onClick={() => openWindow('classduck')}>
+            <Computer style={{ width: 20, height: 20, marginRight: '10px' }} />
+            Classduck
+          </MenuItem>
           <Separator />
           <MenuItem>
             <Computer style={{ width: 20, height: 20, marginRight: '10px' }} />

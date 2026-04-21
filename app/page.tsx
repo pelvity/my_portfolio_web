@@ -26,6 +26,7 @@ function HomeContent() {
     contract: false,
     pdf: false,
     lafleur: true, // Open La Fleur website on start
+    classduck: true, // Open Classduck on start
   });
 
   // Add global styles to force Clippy visibility
@@ -117,7 +118,7 @@ function HomeContent() {
   });
 
   // Keep track of active window for z-index management
-  const [activeWindow, setActiveWindow] = useState<WindowName>('lafleur');
+  const [activeWindow, setActiveWindow] = useState<WindowName>('classduck');
 
   // Handle responsive window resizing
   useEffect(() => {
@@ -205,6 +206,18 @@ function HomeContent() {
     }
   };
 
+  const minimizeWindow = (window: WindowName) => {
+    setOpenWindows({ ...openWindows, [window]: false });
+    // In a real OS we'd keep it in taskbar, but for now we just close it
+    // and let the user reopen it from desktop/start menu
+  };
+
+  const maximizeWindow = (window: WindowName) => {
+    // Toggle between 'large' and 'fullscreen' or similar
+    // For now, just a placeholder
+    console.log('Maximize', window);
+  };
+
   const handlePositionChange = (window: WindowName, position: { x: number, y: number }) => {
     setWindowPositions(prev => ({
       ...prev,
@@ -234,6 +247,8 @@ function HomeContent() {
         activeWindow={activeWindow}
         onActivateWindow={setActiveWindow}
         onCloseWindow={closeWindow}
+        onMinimizeWindow={minimizeWindow}
+        onMaximizeWindow={maximizeWindow}
         onPositionChange={handlePositionChange}
         onSizeChange={handleSizeChange}
         onWaveClippy={handleWaveClippy}
