@@ -14,6 +14,7 @@ interface Win95WindowProps {
   onActivate: () => void;
   onPositionChange?: (position: { x: number, y: number }) => void;
   onSizeChange?: (size: { width: number, height: number }) => void;
+  children: React.ReactNode;
   onMaximize?: () => void;
   onMinimize?: () => void;
   resizable?: boolean;
