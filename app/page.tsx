@@ -184,10 +184,27 @@ function HomeContent() {
     setShowStartMenu(!showStartMenu);
   };
 
-  const openWindow = (window: WindowName) => {
-    setOpenWindows({ ...openWindows, [window]: true });
-    setActiveWindow(window); // Set as active window
+  const openWindow = (windowName: WindowName) => {
+    setOpenWindows({ ...openWindows, [windowName]: true });
+    setActiveWindow(windowName); // Set as active window
     setShowStartMenu(false);
+
+    // Initialize window size if not already set
+    if (!windowSizes[windowName] && typeof window !== 'undefined') {
+      const config = WINDOW_CONFIGS[windowName];
+      const size = calculateWindowSize(config, window.innerWidth, window.innerHeight);
+      const position = calculateWindowPosition(config, size, window.innerWidth, window.innerHeight);
+      
+      setWindowSizes(prev => ({
+        ...prev,
+        [windowName]: size,
+      }));
+      
+      setWindowPositions(prev => ({
+        ...prev,
+        [windowName]: position,
+      }));
+    }
 
     // Show Clippy animation when opening a window
     if (clippy) {
