@@ -254,9 +254,9 @@ function HomeContent() {
         onWaveClippy={handleWaveClippy}
       />
 
-      <ClippyAssistant
+      {/* <ClippyAssistant
         initialMessage="Hi there! I'm Clippy. I see you've got your projects and CV open. Can I help with anything?"
-      />
+      /> */}
 
       <TaskBar
         showStartMenu={showStartMenu}
