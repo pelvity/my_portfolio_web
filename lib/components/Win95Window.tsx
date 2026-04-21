@@ -14,7 +14,8 @@ interface Win95WindowProps {
   onActivate: () => void;
   onPositionChange?: (position: { x: number, y: number }) => void;
   onSizeChange?: (size: { width: number, height: number }) => void;
-  children: React.ReactNode;
+  onMaximize?: () => void;
+  onMinimize?: () => void;
   resizable?: boolean;
 }
 
@@ -60,9 +61,14 @@ const TitleIcon = styled.div`
   align-items: center;
 `;
 
-const CloseButton = styled.button`
-  width: 20px;
-  height: 20px;
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 2px;
+`;
+
+const HeaderButton = styled.button`
+  width: 16px;
+  height: 14px;
   border-top: 1px solid white;
   border-left: 1px solid white;
   border-right: 1px solid black;
@@ -73,15 +79,20 @@ const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 10px;
+  padding: 0;
   
   &:active {
     border-top: 1px solid black;
     border-left: 1px solid black;
     border-right: 1px solid white;
     border-bottom: 1px solid white;
+    padding: 1px 0 0 1px;
   }
+`;
+
+const CloseButton = styled(HeaderButton)`
+  font-size: 14px;
 `;
 
 const WindowContent = styled.div`
@@ -115,6 +126,8 @@ const Win95Window: React.FC<Win95WindowProps> = ({
   onPositionChange,
   onSizeChange,
   children,
+  onMaximize,
+  onMinimize,
   resizable = true
 }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -224,7 +237,11 @@ const Win95Window: React.FC<Win95WindowProps> = ({
           {icon && <TitleIcon>{icon}</TitleIcon>}
           {title}
         </WindowTitle>
-        <CloseButton onClick={onClose}>×</CloseButton>
+        <ButtonGroup>
+          <HeaderButton onClick={(e) => { e.stopPropagation(); onMinimize?.(); }}>_</HeaderButton>
+          <HeaderButton onClick={(e) => { e.stopPropagation(); onMaximize?.(); }}>□</HeaderButton>
+          <CloseButton onClick={(e) => { e.stopPropagation(); onClose(); }} style={{ marginLeft: '2px' }}>×</CloseButton>
+        </ButtonGroup>
       </WindowHeader>
       <WindowContent>
         {children}
