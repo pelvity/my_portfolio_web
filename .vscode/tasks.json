@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "pnpm: dev",
+      "command": "pnpm dev",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "next dev"
+    },
+    {
+      "type": "shell",
+      "label": "pnpm: build",
+      "command": "pnpm build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "next build"
+    },
+    {
+      "type": "shell",
+      "label": "pnpm: start",
+      "command": "pnpm start",
+      "problemMatcher": [],
+      "detail": "next start"
+    },
+    {
+      "type": "shell",
+      "label": "pnpm: lint",
+      "command": "pnpm lint",
+      "problemMatcher": [],
+      "detail": "next lint"
+    },
+    {
+      "type": "shell",
+      "label": "pnpm: install",
+      "command": "pnpm install",
+      "problemMatcher": [],
+      "detail": "install dependencies"
+    }
+  ]
+}
