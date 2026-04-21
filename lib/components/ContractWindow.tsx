@@ -19,6 +19,8 @@ interface ContractWindowProps {
   onActivate: () => void;
   onPositionChange: (position: { x: number, y: number }) => void;
   onSizeChange: (size: { width: number, height: number }) => void;
+  onMinimize?: () => void;
+  onMaximize?: () => void;
 }
 
 const ContractWindow: React.FC<ContractWindowProps> = ({
@@ -29,7 +31,9 @@ const ContractWindow: React.FC<ContractWindowProps> = ({
   zIndex,
   onActivate,
   onPositionChange,
-  onSizeChange
+  onSizeChange,
+  onMinimize,
+  onMaximize
 }) => {
   return (
     <Win95Window
@@ -42,6 +46,8 @@ const ContractWindow: React.FC<ContractWindowProps> = ({
       onActivate={onActivate}
       onPositionChange={onPositionChange}
       onSizeChange={onSizeChange}
+      onMinimize={onMinimize}
+      onMaximize={onMaximize}
     >
       <ContractPaper>
         <ContractTitle>Developer Agreement</ContractTitle>

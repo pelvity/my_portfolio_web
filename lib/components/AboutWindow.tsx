@@ -13,6 +13,8 @@ interface AboutWindowProps {
   onPositionChange: (position: { x: number, y: number }) => void;
   onSizeChange: (size: { width: number, height: number }) => void;
   onWaveClippy: () => void;
+  onMinimize?: () => void;
+  onMaximize?: () => void;
 }
 
 const AboutWindow: React.FC<AboutWindowProps> = ({
@@ -24,7 +26,9 @@ const AboutWindow: React.FC<AboutWindowProps> = ({
   onActivate,
   onPositionChange,
   onSizeChange,
-  onWaveClippy
+  onWaveClippy,
+  onMinimize,
+  onMaximize
 }) => {
   return (
     <Win95Window
@@ -38,6 +42,8 @@ const AboutWindow: React.FC<AboutWindowProps> = ({
       onActivate={onActivate}
       onPositionChange={onPositionChange}
       onSizeChange={onSizeChange}
+      onMinimize={onMinimize}
+      onMaximize={onMaximize}
     >
       <div style={{ padding: '16px', height: '100%', overflow: 'auto' }}>
         <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'center' }}>

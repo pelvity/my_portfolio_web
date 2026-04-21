@@ -94,7 +94,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           isOpen={openWindows.resume}
           onClose={() => onCloseWindow('resume')}
           onMinimize={() => onMinimizeWindow('resume')}
-          onMaximize={() => onMaximizeWindow('maximize')}
+          onMaximize={() => onMaximizeWindow('resume')}
           position={windowPositions.resume || { x: 150, y: 150 }}
           size={windowSizes.resume || { width: 400, height: 300 }}
           zIndex={getWindowZIndex('resume')}

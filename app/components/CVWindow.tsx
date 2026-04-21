@@ -11,9 +11,11 @@ interface CVWindowProps {
   onClose: () => void;
   initialPosition: { x: number, y: number };
   zIndex: number;
+  onMinimize?: () => void;
+  onMaximize?: () => void;
 }
 
-const CVWindow: React.FC<CVWindowProps> = ({ isOpen, onClose, initialPosition, zIndex }) => {
+const CVWindow: React.FC<CVWindowProps> = ({ isOpen, onClose, initialPosition, zIndex, onMinimize, onMaximize }) => {
   const [position, setPosition] = useState(initialPosition);
   const [size, setSize] = useState({ width: 700, height: 500 });
 
@@ -29,6 +31,8 @@ const CVWindow: React.FC<CVWindowProps> = ({ isOpen, onClose, initialPosition, z
       onActivate={() => {}} // This is handled by the parent component
       onPositionChange={(newPosition: { x: number, y: number }) => setPosition(newPosition)}
       onSizeChange={(newSize: { width: number, height: number }) => setSize(newSize)}
+      onMinimize={onMinimize}
+      onMaximize={onMaximize}
     >
       <Frame
         variant="field"
