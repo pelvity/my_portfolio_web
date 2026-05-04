@@ -20,8 +20,9 @@ export const WINDOW_CONFIGS: Record<WindowName, WindowConfigItem> = {
         customPosition: { x: 50, y: 50 },
     },
     projects: {
-        size: 'medium',
+        size: 'custom',
         position: 'custom',
+        customSize: { width: 600, height: 500 },
         customPosition: { x: 50, y: 350 },
     },
     resume: {

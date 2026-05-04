@@ -101,21 +101,17 @@ function HomeContent() {
 
   // Initialize window positions and sizes from config
   const [windowPositions, setWindowPositions] = useState<WindowPositions>(() => {
-    if (typeof window !== 'undefined') {
-      const { positions } = initializeWindowLayout(window.innerWidth, window.innerHeight);
-      return positions;
-    }
-    // Fallback for SSR
-    return {} as WindowPositions;
+    const defaultWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    const defaultHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const { positions } = initializeWindowLayout(defaultWidth, defaultHeight);
+    return positions;
   });
 
   const [windowSizes, setWindowSizes] = useState<WindowSizes>(() => {
-    if (typeof window !== 'undefined') {
-      const { sizes } = initializeWindowLayout(window.innerWidth, window.innerHeight);
-      return sizes;
-    }
-    // Fallback for SSR
-    return {} as WindowSizes;
+    const defaultWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    const defaultHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const { sizes } = initializeWindowLayout(defaultWidth, defaultHeight);
+    return sizes;
   });
 
   // Keep track of active window for z-index management

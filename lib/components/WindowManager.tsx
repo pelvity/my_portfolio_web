@@ -71,8 +71,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onClose={() => onCloseWindow('projects')}
           onMinimize={() => onMinimizeWindow('projects')}
           onMaximize={() => onMaximizeWindow('projects')}
-          position={windowPositions.projects || { x: 50, y: 350 }}
-          size={windowSizes.projects || { width: 600, height: 500 }}
+          position={windowPositions.projects}
+          size={windowSizes.projects}
           zIndex={getWindowZIndex('projects')}
           onActivate={() => onActivateWindow('projects')}
           onPositionChange={(pos) => onPositionChange('projects', pos)}
@@ -95,8 +95,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onClose={() => onCloseWindow('resume')}
           onMinimize={() => onMinimizeWindow('resume')}
           onMaximize={() => onMaximizeWindow('resume')}
-          position={windowPositions.resume || { x: 150, y: 150 }}
-          size={windowSizes.resume || { width: 400, height: 300 }}
+          position={windowPositions.resume}
+          size={windowSizes.resume}
           zIndex={getWindowZIndex('resume')}
           onActivate={() => onActivateWindow('resume')}
           onPositionChange={(pos) => onPositionChange('resume', pos)}
@@ -115,8 +115,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onClose={() => onCloseWindow('pdf')}
           onMinimize={() => onMinimizeWindow('pdf')}
           onMaximize={() => onMaximizeWindow('pdf')}
-          position={windowPositions.pdf || { x: 300, y: 120 }}
-          size={windowSizes.pdf || { width: 600, height: 800 }}
+          position={windowPositions.pdf}
+          size={windowSizes.pdf}
           zIndex={getWindowZIndex('pdf')}
           onActivate={() => onActivateWindow('pdf')}
           onPositionChange={(pos) => onPositionChange('pdf', pos)}
@@ -158,8 +158,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onClose={() => onCloseWindow('contact')}
           onMinimize={() => onMinimizeWindow('contact')}
           onMaximize={() => onMaximizeWindow('contact')}
-          position={windowPositions.contact || { x: 1300, y: 50 }}
-          size={windowSizes.contact || { width: 400, height: 300 }}
+          position={windowPositions.contact}
+          size={windowSizes.contact}
           zIndex={getWindowZIndex('contact')}
           onActivate={() => onActivateWindow('contact')}
           onPositionChange={(pos) => onPositionChange('contact', pos)}
@@ -174,7 +174,7 @@ const WindowManager: React.FC<WindowManagerProps> = ({
         <CVWindow
           isOpen={openWindows.cv}
           onClose={() => onCloseWindow('cv')}
-          initialPosition={windowPositions.cv || { x: 500, y: 50 }}
+          initialPosition={windowPositions.cv}
           zIndex={getWindowZIndex('cv')}
         />
       )}
@@ -188,8 +188,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onClose={() => onCloseWindow('lafleur')}
           onMinimize={() => onMinimizeWindow('lafleur')}
           onMaximize={() => onMaximizeWindow('lafleur')}
-          position={windowPositions.lafleur || { x: 600, y: 100 }}
-          size={windowSizes.lafleur || { width: 800, height: 600 }}
+          position={windowPositions.lafleur}
+          size={windowSizes.lafleur}
           zIndex={getWindowZIndex('lafleur')}
           onActivate={() => onActivateWindow('lafleur')}
           onPositionChange={(pos) => onPositionChange('lafleur', pos)}
@@ -231,8 +231,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onClose={() => onCloseWindow('classduck')}
           onMinimize={() => onMinimizeWindow('classduck')}
           onMaximize={() => onMaximizeWindow('classduck')}
-          position={windowPositions.classduck || { x: 100, y: 100 }}
-          size={windowSizes.classduck || { width: 800, height: 600 }}
+          position={windowPositions.classduck}
+          size={windowSizes.classduck}
           zIndex={getWindowZIndex('classduck')}
           onActivate={() => onActivateWindow('classduck')}
           onPositionChange={(pos) => onPositionChange('classduck', pos)}
@@ -273,8 +273,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onClose={() => onCloseWindow('mrost')}
           onMinimize={() => onMinimizeWindow('mrost')}
           onMaximize={() => onMaximizeWindow('mrost')}
-          position={windowPositions.mrost || { x: 400, y: 150 }}
-          size={windowSizes.mrost || { width: 800, height: 600 }}
+          position={windowPositions.mrost}
+          size={windowSizes.mrost}
           zIndex={getWindowZIndex('mrost')}
           onActivate={() => onActivateWindow('mrost')}
           onPositionChange={(pos) => onPositionChange('mrost', pos)}
@@ -314,8 +314,8 @@ const WindowManager: React.FC<WindowManagerProps> = ({
           onClose={() => onCloseWindow('contract')}
           onMinimize={() => onMinimizeWindow('contract')}
           onMaximize={() => onMaximizeWindow('contract')}
-          position={windowPositions.contract || { x: 50, y: 80 }}
-          size={windowSizes.contract || { width: 600, height: 500 }}
+          position={windowPositions.contract}
+          size={windowSizes.contract}
           zIndex={getWindowZIndex('contract')}
           onActivate={() => onActivateWindow('contract')}
           onPositionChange={(pos) => onPositionChange('contract', pos)}
