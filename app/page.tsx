@@ -27,6 +27,7 @@ function HomeContent() {
     pdf: false,
     lafleur: true, // Open La Fleur website on start
     classduck: true, // Open Classduck on start
+    mrost: true,
   });
 
   // Add global styles to force Clippy visibility

@@ -265,6 +265,48 @@ const WindowManager: React.FC<WindowManagerProps> = ({
         </Win95Window>
       )}
 
+      {openWindows.mrost && (
+        <Win95Window
+          title="mrost.pl"
+          icon={<Computer style={{ width: 16, height: 16 }} />}
+          isOpen={openWindows.mrost}
+          onClose={() => onCloseWindow('mrost')}
+          onMinimize={() => onMinimizeWindow('mrost')}
+          onMaximize={() => onMaximizeWindow('mrost')}
+          position={windowPositions.mrost || { x: 400, y: 150 }}
+          size={windowSizes.mrost || { width: 800, height: 600 }}
+          zIndex={getWindowZIndex('mrost')}
+          onActivate={() => onActivateWindow('mrost')}
+          onPositionChange={(pos) => onPositionChange('mrost', pos)}
+          onSizeChange={(size) => onSizeChange('mrost', size)}
+        >
+          <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ padding: '2px', background: '#c0c0c0', borderBottom: '1px solid #808080', textAlign: 'left' }}>
+              <a
+                href="https://mrost.pl"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <button style={{ background: '#c0c0c0', border: '1px solid #c0c0c0', padding: '2px 5px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Help style={{ width: 16, height: 16, marginRight: '5px' }} />
+                    Open in New Tab
+                  </div>
+                </button>
+              </a>
+            </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <iframe
+                src="https://mrost.pl"
+                style={{ border: 'none', height: '100%', width: '100%' }}
+                title="mrost.pl Preview"
+              />
+            </div>
+          </div>
+        </Win95Window>
+      )}
+
       {/* Contract Window */}
       {openWindows.contract && (
         <ContractWindow
