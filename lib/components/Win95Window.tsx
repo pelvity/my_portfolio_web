@@ -187,16 +187,17 @@ const Win95Window: React.FC<Win95WindowProps> = ({
   }, [isDragging, dragOffset, isResizing, resizeStartPos, resizeStartSize, onPositionChange, onSizeChange, resizable]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
     onActivate();
 
     const headerElement = headerRef.current;
     if (headerElement) {
-      // const rect = headerElement.getBoundingClientRect();
       setDragOffset({
         x: e.clientX - position.x,
         y: e.clientY - position.y
       });
       setIsDragging(true);
+      setIsResizing(false);
     }
 
     e.preventDefault();
@@ -204,10 +205,12 @@ const Win95Window: React.FC<Win95WindowProps> = ({
 
   const handleResizeMouseDown = (e: React.MouseEvent) => {
     if (!resizable) return;
+    e.stopPropagation();
 
     onActivate();
 
     setIsResizing(true);
+    setIsDragging(false);
     setResizeStartPos({
       x: e.clientX,
       y: e.clientY
@@ -238,7 +241,7 @@ const Win95Window: React.FC<Win95WindowProps> = ({
           {icon && <TitleIcon>{icon}</TitleIcon>}
           {title}
         </WindowTitle>
-        <ButtonGroup>
+        <ButtonGroup onMouseDown={(e) => e.stopPropagation()}>
           <HeaderButton onClick={(e) => { e.stopPropagation(); onMinimize?.(); }}>_</HeaderButton>
           <HeaderButton onClick={(e) => { e.stopPropagation(); onMaximize?.(); }}>□</HeaderButton>
           <CloseButton onClick={(e) => { e.stopPropagation(); onClose(); }} style={{ marginLeft: '2px' }}>×</CloseButton>
